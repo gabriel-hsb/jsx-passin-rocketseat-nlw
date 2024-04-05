@@ -1,18 +1,13 @@
-import {} from "lucide-react";
-
 import DevLogoSvg from "../assets/svg/DevLogoSvg";
+import NavLink from "./NavLink";
 
 const Header = () => {
   return (
     <header>
-      <nav className="flex items-center gap-5 py-4 text-sm">
+      <nav className="flex items-center gap-5 py-4">
         <DevLogoSvg />
-        <a href="http://" className="hover:text-zinc-400">
-          Eventos
-        </a>
-        <a href="http://" className="hover:text-zinc-400">
-          Participantes
-        </a>
+        <NavLink href="https://google.com.br">Eventos</NavLink>
+        <NavLink>Participantes</NavLink>
       </nav>
     </header>
   );
