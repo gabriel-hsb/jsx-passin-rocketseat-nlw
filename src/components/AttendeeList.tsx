@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import {
   ChevronLeft,
   ChevronRight,
@@ -7,6 +9,12 @@ import {
   Search,
 } from "lucide-react";
 
+import dayjs from "dayjs";
+import RelativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/pt-br";
+dayjs.extend(RelativeTime);
+dayjs.locale("pt-br");
+
 import IconButton from "./IconButton";
 import Table from "./table/Table";
 import TableHeader from "./table/TableHeader";
@@ -14,6 +22,23 @@ import Checkbox from "./form/Checkbox";
 import TableCell from "./table/TableCell";
 
 const AttendeeList = () => {
+  const [attendeesData, setAttendeesData] = useState([]);
+  const [page, setPage] = useState(1);
+
+  const lastPage = Math.ceil(attendeesData.length / 10);
+  const atFirstPage = page === 1;
+  const atLastPage = page === Math.ceil(attendeesData.length / 10);
+
+  useEffect(() => {
+    fetch(
+      "http://localhost:3333/events/9e9bd979-9d10-4915-b339-3786b1634f33/attendees"
+    )
+      .then((res) => res.json())
+      .then((resJson) => {
+        setAttendeesData(resJson.attendees);
+      });
+  }, [page]);
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
@@ -43,25 +68,28 @@ const AttendeeList = () => {
           </tr>
         </thead>
         <tbody className="text-sm">
-          {Array.from({ length: 8 }).map((_, i) => {
+          {attendeesData.map((attendee) => {
             return (
-              <tr key={i} className="hover:bg-zinc-900 transition-all">
+              <tr
+                key={attendee.id}
+                className="hover:bg-zinc-900 transition-all"
+              >
                 <TableCell>
                   <Checkbox />
                 </TableCell>
-                <TableCell>52176</TableCell>
+                <TableCell>{attendee.id}</TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-1">
                     <span className="font-semibold text-white">
-                      Gabriel Henrique
+                      {attendee.name}
                     </span>
                     <span className="text-white/80 text-xs">
-                      ghbranco6@gmail.com
+                      {attendee.email.toLowerCase()}
                     </span>
                   </div>
                 </TableCell>
-                <TableCell className=" text-red-500 ">7 dias atrás</TableCell>
-                <TableCell>4 dias atrás</TableCell>
+                <TableCell>{dayjs(attendee.createdAt).toNow()}</TableCell>
+                <TableCell>{dayjs(attendee.checkedInAt).toNow()}</TableCell>
                 <TableCell>
                   <div className="flex justify-end">
                     <IconButton>
@@ -76,22 +104,40 @@ const AttendeeList = () => {
         <tfoot>
           <tr className="text-sm text-white/80">
             <td colSpan={3} className="py-3 px-4">
-              Mostrando 10 de 358 itens
+              Mostrando 10 de {attendeesData.length} itens
             </td>
             <td colSpan={3} className="py-3 px-4">
               <div className="flex items-center justify-end gap-8 text-right">
-                <span>Página 1 de 17</span>
+                <span>
+                  Página {page} de {lastPage}
+                </span>
                 <div className="flex items-center gap-1.5">
-                  <IconButton transparent>
+                  <IconButton
+                    disabled={atFirstPage}
+                    transparent={atFirstPage}
+                    onClick={() => setPage(1)}
+                  >
                     <ChevronsLeft className="size-4" />
                   </IconButton>
-                  <IconButton transparent>
+                  <IconButton
+                    disabled={atFirstPage}
+                    transparent={atFirstPage}
+                    onClick={() => setPage(page - 1)}
+                  >
                     <ChevronLeft className="size-4" />
                   </IconButton>
-                  <IconButton>
+                  <IconButton
+                    disabled={atLastPage}
+                    transparent={atLastPage}
+                    onClick={() => setPage(page + 1)}
+                  >
                     <ChevronRight className="size-4" />
                   </IconButton>
-                  <IconButton>
+                  <IconButton
+                    disabled={atLastPage}
+                    transparent={atLastPage}
+                    onClick={() => setPage(lastPage)}
+                  >
                     <ChevronsRight className="size-4" />
                   </IconButton>
                 </div>

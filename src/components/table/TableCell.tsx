@@ -7,7 +7,7 @@ const TableCell = (props: TableCellProps) => {
     <>
       <td
         {...props}
-        className="py-3 p-4 border-b-2 border-solid border-white/10 text-white/80"
+        className="py-3 p-4 border-b-2 border-solid border-white/10 max-w-md text-white/80"
       />
     </>
   );
