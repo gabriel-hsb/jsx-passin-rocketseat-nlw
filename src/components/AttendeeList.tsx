@@ -21,87 +21,62 @@ import TableHeader from "./table/TableHeader";
 import Checkbox from "./form/Checkbox";
 import TableCell from "./table/TableCell";
 
-interface Attendee {
-  id: string;
-  name: string;
-  email: string;
-  createdAt: string;
-  checkedInAt: string | null;
-  total: number;
-}
+import { attendees } from "../api/data";
 
 const AttendeeList = () => {
   // se na url tiver uma página declarada, vai renderizar aquela página
   // caso contrário, renderiza a pagina 1
-  const [page, setPage] = useState(() => {
-    const url = new URL(window.location.toString());
-    if (url.searchParams.has("page")) {
-      return Number(url.searchParams.get("page"));
-    } else {
-      return 1;
-    }
-  });
+  const [page, setPage] = useState(1);
 
-  const [filter, setFilter] = useState(() => {
-    const url = new URL(window.location.toString());
-    if (url.searchParams.has("query")) {
-      // se for null, também retorna array vazio (pois a URL permite ter query= *string vazia*)
-      return url.searchParams.get("query") ?? "";
-    } else {
-      return "";
-    }
-  });
+  // const [filter, setFilter] = useState("");
 
-  const [attendeesData, setAttendeesData] = useState<Attendee[]>([]);
-  const [total, setTotal] = useState(0);
-
-  const lastPage = Math.ceil(total / 10);
+  const lastPage = Math.ceil(attendees.length / 10);
   const atFirstPage = page === 1;
-  const atLastPage = page === Math.ceil(total / 10);
+  const atLastPage = page === lastPage;
 
-  function userFilterInput(e: ChangeEvent<HTMLInputElement>) {
-    setCurrentSearch(e.target.value);
-    setCurrentPage(1);
-  }
+  // function userFilterInput(e: ChangeEvent<HTMLInputElement>) {
+  //   setCurrentSearch(e.target.value);
+  //   setCurrentPage(1);
+  // }
 
   // usando history.pushState, podemos armazenar a variavel 'page' na URL do browser, podendo copiar e colar
-  function setCurrentPage(page: number) {
-    const url = new URL(window.location.toString());
+  // function setCurrentPage(page: number) {
+  //   const url = new URL(window.location.toString());
 
-    url.searchParams.set("page", String(page));
+  //   url.searchParams.set("page", String(page));
 
-    window.history.pushState({}, "", url);
+  //   window.history.pushState({}, "", url);
 
-    setPage(page);
-  }
+  //   setPage(page);
+  // }
 
-  function setCurrentSearch(search: string) {
-    const url = new URL(window.location.toString());
+  // function setCurrentSearch(search: string) {
+  //   const url = new URL(window.location.toString());
 
-    url.searchParams.set("query", search);
+  //   url.searchParams.set("query", search);
 
-    window.history.pushState({}, "", url);
+  //   window.history.pushState({}, "", url);
 
-    setFilter(search);
-  }
+  //   setFilter(search);
+  // }
 
-  useEffect(() => {
-    const url = new URL(
-      "http://localhost:3333/events/9e9bd979-9d10-4915-b339-3786b1634f33/attendees"
-    );
+  // useEffect(() => {
+  //   const url = new URL(
+  //     "http://localhost:3333/events/9e9bd979-9d10-4915-b339-3786b1634f33/attendees"
+  //   );
 
-    url.searchParams.set("pageIndex", String(page - 1));
-    if (filter.length > 0) {
-      url.searchParams.set("query", filter);
-    }
+  //   url.searchParams.set("pageIndex", String(page - 1));
+  //   if (filter.length > 0) {
+  //     url.searchParams.set("query", filter);
+  //   }
 
-    fetch(url)
-      .then((res) => res.json())
-      .then((resJson) => {
-        setAttendeesData(resJson.attendees);
-        setTotal(resJson.total);
-      });
-  }, [filter, page]);
+  //   fetch(url)
+  //     .then((res) => res.json())
+  //     .then((resJson) => {
+  //       setAttendeesData(resJson.attendees);
+  //       setTotal(resJson.total);
+  //     });
+  // }, [filter, page]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -113,8 +88,6 @@ const AttendeeList = () => {
             type="text"
             placeholder="Buscar participante..."
             className="bg-transparent outline-none border-none focus:border-none focus:outline-none focus:ring-0 p-0 w-auto text-sm"
-            onChange={userFilterInput}
-            value={filter}
           />
         </div>
       </div>
@@ -134,7 +107,7 @@ const AttendeeList = () => {
           </tr>
         </thead>
         <tbody className="text-sm">
-          {attendeesData.map((attendee) => {
+          {attendees.slice((page - 1) * 10, page * 10).map((attendee) => {
             return (
               <tr
                 key={attendee.id}
@@ -178,7 +151,7 @@ const AttendeeList = () => {
         <tfoot>
           <tr className="text-sm text-white/80">
             <td colSpan={3} className="py-3 px-4">
-              Mostrando {attendeesData.length} de {total} itens
+              Total: {attendees.length} participantes
             </td>
             <td colSpan={3} className="py-3 px-4">
               <div className="flex items-center justify-end gap-8 text-right">
@@ -189,28 +162,28 @@ const AttendeeList = () => {
                   <IconButton
                     disabled={atFirstPage}
                     transparent={atFirstPage}
-                    onClick={() => setCurrentPage(1)}
+                    onClick={() => setPage(1)}
                   >
                     <ChevronsLeft className="size-4" />
                   </IconButton>
                   <IconButton
                     disabled={atFirstPage}
                     transparent={atFirstPage}
-                    onClick={() => setCurrentPage(page - 1)}
+                    onClick={() => setPage(page - 1)}
                   >
                     <ChevronLeft className="size-4" />
                   </IconButton>
                   <IconButton
                     disabled={atLastPage}
                     transparent={atLastPage}
-                    onClick={() => setCurrentPage(page + 1)}
+                    onClick={() => setPage(page + 1)}
                   >
                     <ChevronRight className="size-4" />
                   </IconButton>
                   <IconButton
                     disabled={atLastPage}
                     transparent={atLastPage}
-                    onClick={() => setCurrentPage(lastPage)}
+                    onClick={() => setPage(lastPage)}
                   >
                     <ChevronsRight className="size-4" />
                   </IconButton>
