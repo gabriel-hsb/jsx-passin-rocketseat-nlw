@@ -5,12 +5,12 @@ interface UserNotFoundProps {
   clearSearch: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const UserNotFound: React.FC<UserNotFoundProps> = ({ search, clearSearch }) => {
+const UserNotFound: React.FC<UserNotFoundProps> = ({ clearSearch }) => {
   return (
     <div className="flex items-center justify-center flex-col h-96 gap-5">
       <h2 className="text-center text-lg text-white/85">
         <div className="flex items-center gap-2">
-        <SearchX /> Participante não encontrado
+          <SearchX /> Participante não encontrado
         </div>
       </h2>
       <button
