@@ -1,3 +1,5 @@
+import { SearchX } from "lucide-react";
+
 interface UserNotFoundProps {
   search: string;
   clearSearch: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -5,13 +7,15 @@ interface UserNotFoundProps {
 
 const UserNotFound: React.FC<UserNotFoundProps> = ({ search, clearSearch }) => {
   return (
-    <div className="grid content-center h-96 gap-5">
+    <div className="flex items-center justify-center flex-col h-96 gap-5">
       <h2 className="text-center text-lg text-white/85">
-        O usuário {search} não foi encontrado 😞
+        <div className="flex items-center gap-2">
+        <SearchX /> Participante não encontrado
+        </div>
       </h2>
       <button
         onClick={clearSearch}
-        className=" border border-[#f43737] inline-block w-fit mx-auto py-2 px-4 rounded-md text-white/85  transition-all hover:bg-[#f43737]   "
+        className=" border border-[#f43737] inline-block w-fit mx-auto py-1.5 px-3 rounded-md text-white/85  transition-all hover:bg-[#f43737]   "
       >
         Limpar busca
       </button>

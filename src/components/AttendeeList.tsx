@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   ChevronLeft,
@@ -44,7 +44,11 @@ const AttendeeList = () => {
     if (search.length > 0) {
       setFilteredAttendees(
         attendees.filter((attendee) => {
-          return attendee.name.toLowerCase().includes(search.toLowerCase());
+          return (
+            attendee.name.toLowerCase().includes(search.toLowerCase()) ||
+            attendee.email.toLowerCase().includes(search.toLowerCase()) ||
+            attendee.id.toString().includes(search.toLowerCase())
+          );
         })
       );
     } else {
@@ -60,7 +64,7 @@ const AttendeeList = () => {
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
         <h1 className="font-bold text-2xl text-white/85 ">Participantes</h1>
-        <div className=" border rounded-lg border-transparent border-zinc-600  flex items-center gap-3 py-1.5 px-3 w-64 ">
+        <div className=" border rounded-lg border-transparent border-zinc-600 flex items-center gap-3 py-1.5 px-3 w-64 ">
           <Search className="h-5 text-emerald-200" />
           <input
             type="text"

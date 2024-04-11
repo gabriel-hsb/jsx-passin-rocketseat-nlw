@@ -7,7 +7,7 @@ const Checkbox = (props: CheckboxProps) => {
     <input
       {...props}
       type="checkbox"
-      className="bg-transparent rounded-[4px] cursor-pointer hover:bg-zinc-800 text-orange-400 ring-0 focus:ring-0 focus:ring-offset-0"
+      className="bg-transparent rounded-[4px] cursor-pointer hover:bg-zinc-800 text-orange-800 ring-0 focus:ring-0 focus:ring-offset-0"
     />
   );
 };
