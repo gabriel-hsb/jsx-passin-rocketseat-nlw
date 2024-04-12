@@ -23,6 +23,7 @@ import TableCell from "./table/TableCell";
 
 import { attendees } from "../api/data";
 import UserNotFound from "./UserNotFound";
+import DropdownMenu from "./DropdownMenu";
 
 const AttendeeList = () => {
   const [page, setPage] = useState(1);
@@ -60,6 +61,13 @@ const AttendeeList = () => {
     setSearch("");
   }
 
+  const [clickedLine, setClickedLine] = useState<number | null>(null);
+
+  // param 'index' is index of attendees' array
+  const updateClickedLine = (index: number): void => {
+    setClickedLine(index === clickedLine ? null : index);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
@@ -96,7 +104,7 @@ const AttendeeList = () => {
           <tbody className="text-sm">
             {(search.length > 0 ? filteredAttendees : attendees)
               .slice((page - 1) * 10, page * 10)
-              .map((attendee) => {
+              .map((attendee, idx) => {
                 return (
                   <tr
                     key={attendee.id}
@@ -129,10 +137,11 @@ const AttendeeList = () => {
                       )}
                     </TableCell>
                     <TableCell>
-                      <div className="flex justify-end">
-                        <IconButton>
-                          <Ellipsis className="size-4" />
+                      <div className="flex justify-end relative">
+                        <IconButton onClick={() => updateClickedLine(idx)}>
+                          <Ellipsis className="size-4 " />
                         </IconButton>
+                        {clickedLine === idx && <DropdownMenu />}
                       </div>
                     </TableCell>
                   </tr>
