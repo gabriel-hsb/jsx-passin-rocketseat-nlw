@@ -104,7 +104,7 @@ const AttendeeList = () => {
           <tbody className="text-sm">
             {(search.length > 0 ? filteredAttendees : attendees)
               .slice((page - 1) * 10, page * 10)
-              .map((attendee, idx) => {
+              .map((attendee, index) => {
                 return (
                   <tr
                     key={attendee.id}
@@ -138,10 +138,16 @@ const AttendeeList = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex justify-end relative">
-                        <IconButton onClick={() => updateClickedLine(idx)}>
+                        <IconButton onClick={() => updateClickedLine(index)}>
                           <Ellipsis className="size-4 " />
                         </IconButton>
-                        {clickedLine === idx && <DropdownMenu />}
+                        {clickedLine === index && (
+                          <DropdownMenu
+                            index={index}
+                            attendees={attendees}
+                            setLine={setClickedLine}
+                          />
+                        )}
                       </div>
                     </TableCell>
                   </tr>
