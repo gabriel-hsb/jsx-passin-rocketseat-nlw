@@ -43,6 +43,7 @@ const AttendeeList = () => {
 
   useEffect(() => {
     if (search.length > 0) {
+      setPage(1);
       setFilteredAttendees(
         attendees.filter((attendee) => {
           return (
