@@ -23,11 +23,13 @@ import TableCell from "./table/TableCell";
 
 import { attendees } from "../api/data";
 import UserNotFound from "./UserNotFound";
-import DropdownMenu from "./DropdownMenu";
+import DropdownMenu from "./popups/DropdownMenu";
+import EditAttendeeWindow from "./popups/EditAttendeeWindow";
 
 const AttendeeList = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+
   const [filteredAttendees, setFilteredAttendees] = useState<
     {
       id: number;
@@ -65,9 +67,49 @@ const AttendeeList = () => {
   const [clickedLine, setClickedLine] = useState<number | null>(null);
 
   // param 'index' is index of attendees' array
-  const updateClickedLine = (index: number): void => {
+  const updateClickedLine = (index: number, e: any): void => {
     setClickedLine(index === clickedLine ? null : index);
+    setQuery(false);
+    e.stopPropagation();
   };
+
+  // page navigation
+
+  //sets clickedLine to null to hide dropdown menu
+  function goFirstPage() {
+    setPage(1);
+    setClickedLine(null);
+  }
+
+  function goToPrevPage() {
+    setPage(page - 1);
+    setClickedLine(null);
+  }
+
+  function goToNextPage() {
+    setPage(page + 1);
+    setClickedLine(null);
+  }
+
+  function goToLastPage() {
+    setPage(lastPage);
+    setClickedLine(null);
+  }
+
+  useEffect(() => {
+    document.addEventListener("click", () => setClickedLine(null));
+    document.addEventListener("click", () => console.log("document cliclado"));
+
+    // needs a return statement to remove listener when component is removed from DOM
+    return () => {
+      document.addEventListener("click", () => setClickedLine(null));
+      document.addEventListener("click", () =>
+        console.log("document cliclado")
+      );
+    };
+  }, []);
+
+  const [Query, setQuery] = useState(false);
 
   return (
     <div className="flex flex-col gap-4">
@@ -139,7 +181,9 @@ const AttendeeList = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex justify-end relative">
-                        <IconButton onClick={() => updateClickedLine(index)}>
+                        <IconButton
+                          onClick={(e) => updateClickedLine(index, e)}
+                        >
                           <Ellipsis className="size-4 " />
                         </IconButton>
                         {clickedLine === index && (
@@ -147,6 +191,10 @@ const AttendeeList = () => {
                             index={index}
                             attendees={attendees}
                             setLine={setClickedLine}
+                            // attendeeName={attendees[index].name}
+                            // attendeeId={attendees[index].id}
+                            onQuery={setQuery}
+                            Query={Query}
                           />
                         )}
                       </div>
@@ -169,28 +217,28 @@ const AttendeeList = () => {
                     <IconButton
                       disabled={atFirstPage}
                       transparent={atFirstPage}
-                      onClick={() => setPage(1)}
+                      onClick={goFirstPage}
                     >
                       <ChevronsLeft className="size-4" />
                     </IconButton>
                     <IconButton
                       disabled={atFirstPage}
                       transparent={atFirstPage}
-                      onClick={() => setPage(page - 1)}
+                      onClick={goToPrevPage}
                     >
                       <ChevronLeft className="size-4" />
                     </IconButton>
                     <IconButton
                       disabled={atLastPage}
                       transparent={atLastPage}
-                      onClick={() => setPage(page + 1)}
+                      onClick={goToNextPage}
                     >
                       <ChevronRight className="size-4" />
                     </IconButton>
                     <IconButton
                       disabled={atLastPage}
                       transparent={atLastPage}
-                      onClick={() => setPage(lastPage)}
+                      onClick={goToLastPage}
                     >
                       <ChevronsRight className="size-4" />
                     </IconButton>
@@ -200,6 +248,13 @@ const AttendeeList = () => {
             </tr>
           </tfoot>
         </Table>
+      )}
+
+      {Query && clickedLine !== null && (
+        <EditAttendeeWindow
+          attendeeId={attendees[clickedLine].id}
+          attendeeName={attendees[clickedLine].name}
+        />
       )}
     </div>
   );

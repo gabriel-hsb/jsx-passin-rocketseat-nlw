@@ -10,7 +10,7 @@ const UserNotFound: React.FC<UserNotFoundProps> = ({ clearSearch }) => {
     <div className="flex items-center justify-center flex-col h-96 gap-5">
       <h2 className="text-center text-lg text-white/85">
         <div className="flex items-center gap-2">
-          <SearchX /> Participante não encontrado
+          <SearchX className="text-emerald-200" /> Participante não encontrado
         </div>
       </h2>
       <button
