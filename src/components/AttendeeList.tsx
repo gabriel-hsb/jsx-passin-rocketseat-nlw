@@ -39,7 +39,7 @@ const AttendeeList = () => {
       checkedInAt: Date;
     }[]
   >([]);
-  const lastPage = Math.ceil(attendees.length / 10);
+  const lastPage = Math.ceil(filteredAttendees.length / 10);
   const atFirstPage = page === 1;
   const atLastPage = page === lastPage;
 
@@ -212,7 +212,7 @@ const AttendeeList = () => {
           <tfoot>
             <tr className="text-sm text-white/80">
               <td colSpan={3} className="py-3 px-4">
-                Total: {attendees.length} participantes
+                Total: {filteredAttendees.length} participantes
               </td>
               <td colSpan={3} className="py-3 px-4">
                 <div className="flex items-center justify-end gap-8 text-right">
