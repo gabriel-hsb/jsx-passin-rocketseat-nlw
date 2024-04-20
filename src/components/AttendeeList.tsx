@@ -98,18 +98,16 @@ const AttendeeList = () => {
 
   useEffect(() => {
     document.addEventListener("click", () => setClickedLine(null));
-    document.addEventListener("click", () => console.log("document cliclado"));
 
     // needs a return statement to remove listener when component is removed from DOM
     return () => {
       document.addEventListener("click", () => setClickedLine(null));
-      document.addEventListener("click", () =>
-        console.log("document cliclado")
-      );
     };
   }, []);
 
   const [Query, setQuery] = useState(false);
+
+  const updatedAttendees = [...filteredAttendees];
 
   return (
     <div className="flex flex-col gap-4">
@@ -145,7 +143,7 @@ const AttendeeList = () => {
             </tr>
           </thead>
           <tbody className="text-sm">
-            {(search.length > 0 ? filteredAttendees : attendees)
+            {filteredAttendees
               .slice((page - 1) * 10, page * 10)
               .map((attendee, index) => {
                 return (
@@ -186,13 +184,21 @@ const AttendeeList = () => {
                         >
                           <Ellipsis className="size-4 " />
                         </IconButton>
+                        {Query && clickedLine !== null && (
+                          <EditAttendeeWindow
+                            attendeeId={attendees[clickedLine].id}
+                            attendeeName={attendees[clickedLine].name}
+                            index={clickedLine}
+                            updatedAttendees={updatedAttendees}
+                            onQuery={setQuery}
+                            setClickedLine={setClickedLine}
+                          />
+                        )}
                         {clickedLine === index && (
                           <DropdownMenu
                             index={index}
                             attendees={attendees}
                             setLine={setClickedLine}
-                            // attendeeName={attendees[index].name}
-                            // attendeeId={attendees[index].id}
                             onQuery={setQuery}
                             Query={Query}
                           />
@@ -248,13 +254,6 @@ const AttendeeList = () => {
             </tr>
           </tfoot>
         </Table>
-      )}
-
-      {Query && clickedLine !== null && (
-        <EditAttendeeWindow
-          attendeeId={attendees[clickedLine].id}
-          attendeeName={attendees[clickedLine].name}
-        />
       )}
     </div>
   );
