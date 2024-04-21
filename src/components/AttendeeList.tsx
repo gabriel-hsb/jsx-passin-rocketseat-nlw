@@ -186,9 +186,9 @@ const AttendeeList = () => {
                         </IconButton>
                         {Query && clickedLine !== null && (
                           <EditAttendeeWindow
-                            attendeeId={attendees[clickedLine].id}
-                            attendeeName={attendees[clickedLine].name}
-                            index={clickedLine}
+                            attendeeId={filteredAttendees[(page - 1) * 10 + clickedLine].id}
+                            attendeeName={filteredAttendees[(page - 1) * 10 + clickedLine].name}
+                            index={(page - 1) * 10 + clickedLine}
                             updatedAttendees={updatedAttendees}
                             onQuery={setQuery}
                             setClickedLine={setClickedLine}
@@ -196,8 +196,8 @@ const AttendeeList = () => {
                         )}
                         {clickedLine === index && (
                           <DropdownMenu
-                            index={index}
-                            attendees={attendees}
+                            index={(page - 1) * 10 + clickedLine}
+                            attendees={filteredAttendees}
                             setLine={setClickedLine}
                             onQuery={setQuery}
                             Query={Query}
